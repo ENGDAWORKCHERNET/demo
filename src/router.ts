@@ -12,8 +12,10 @@ import { getPrice } from "./services/pricing";
 export const router = express.Router();
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Extended ChatMessage type to handle OpenAI function calls properly
 type ChatMessage =
-  | { role: "system" | "user" | "assistant"; content: string }
+  | { role: "system" | "user"; content: string }
+  | { role: "assistant"; content: string | null; function_call?: OpenAI.Chat.Completions.ChatCompletionMessage.FunctionCall }
   | { role: "function"; name: string; content: string };
 
 router.get("/stream", async (req, res) => {
@@ -30,8 +32,7 @@ router.get("/stream", async (req, res) => {
   const messages: ChatMessage[] = [
     {
       role: "system",
-      content:
-        "You are Rhea, a real-time AI assistant for a fintech super app. Speak clearly and concisely. Use available functions to provide accurate, real-time answers.",
+      content: SYSTEM_PROMPT,
     },
     {
       role: "user",
@@ -62,9 +63,9 @@ router.get("/stream", async (req, res) => {
       // Add the function_call message (OpenAI returns it as a message object)
       messages.push({
         role: "assistant",
-        content: message.content || "",
+        content: message.content || null,
         function_call: message.function_call,
-      } as any);
+      });
       messages.push({
         role: "function",
         name: fnName,
@@ -111,9 +112,18 @@ router.get("/product-info", async (req, res) => {
 
   try {
     const stock = getStock(productId);
-    const price = await getPrice(productId);
+    const priceInfo = await getPrice(productId);
 
-    return res.status(200).json({ stock, price });
+    if (priceInfo === null) {
+      return res.status(404).json({ error: "Product not found." });
+    }
+
+    return res.status(200).json({ 
+      stock, 
+      price: priceInfo.price,
+      currency: priceInfo.currency,
+      lastUpdated: priceInfo.lastUpdated
+    });
   } catch (err) {
     console.error("Error fetching product info:", err);
     return res.status(500).json({ error: "Internal error fetching product info." });
