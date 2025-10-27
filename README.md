@@ -1,62 +1,130 @@
-name = input (' type your name: ')
-print('welcom', name, "Once upon a time, there were three friends michael, kaleab, and ebenezer who were attending the same school. They loved nothing more than smoking cannabis and hanging out together, but there was one problem: their parents didn't approve of their habit. Since they all still lived with their parents, they had to be extra careful not to get caught.")
+# Fintech AI Assistant
 
-answer = input('kaleab call you, what do you do /answer/dont answer: ').lower()
+A real-time AI assistant for a fintech super app, powered by OpenAI's GPT-4 with function calling capabilities.
 
-if answer == 'answer':
-    answer = input("yooooo miki you trina pull up today bro /no/yessir/nahh pull up to my carb!")
-    
-    if answer == 'yessir':
-        answer = input('you drive to kleabs crib and start blazing you finish your first J and kaleab asks you if you want to roal another one /yes/no: ')
-        
-        if answer =='yes':
-            answer = input('you guys get to rolling a thick ass joint and out of nowhere you hear the door knock what do you do /flush the j and open/open: ')
-            if answer =='open':
-                print('you open the door and its the maid and she brought some food yaaaaaaaaa :) ')
-            elif answer == 'flush the j and open':
-                print('it was the made and now you dont have a j :()') 
-            else:
-                print('not a valid answre')     
-        
-    if answer == 'nahh pull up to my crib':    
-        answer = input('kali comes to your crib and yall start smoking and then kali says lets call ebay /call/nahh he not pulling up bro: ')
-        
-        if answer == 'call':
-            print('ebenezer answers the phone and yall talk to him and he tells you he go work to do :(')
-        elif answer == 'nahh he not pullingup bro':
-            print('kaleab ends up calling and ebenezer tells him he cant show up today :( ')   
-        
-    else:
-        print('meow meow meowwwwwww :)')    
-elif answer == 'dont answer':
-    quit()
-else:
-    print('not a valid option. you lose.')   
-         
-answer = input('after a long day of chillin kali out of nowhere says lets go out and get some drinks and party what do you say /nahhh bro / ight bet / ')
-    
-if answer == 'ight bet':
-    answer = input('you and kali go out ebe pulls up out of nowhere and you are having a good time. a nigga pulls up and tells you they bout to spark up what u do / go / stay / ')
-    
-    if answer == 'go':
-        print('you guys go out and light up the joint then a cop comes out from the shadows and kills all of yall :(')
-        quit
-    elif answer == 'stay':
-        answer = input('you coolin the hozzz pull up and you have an amazing time :)')
-        
-answer = input('the ozzz pull up with hella drinks and now you getting pressed by some bitches what you do /nahhh i dont drink/drink/  ').lower()
+## Features
 
-if answer == 'drink':
-    answer = input("they start puring you shots and shots you start drinking like a mf then it got late af and you are tired what do you do /go home with ebe/drive back/: ")
-    
-    if answer == 'drive back':
-        print('you are driving back home and a cop stops you and kills you :( ')
-             
-    elif answer == 'go home with ebe':
-        print('ebenezer takes you to the crib safe and you have the best sleep ever 🥳🥳')
-              
-              
-              
-elif answer == 'nahh i dont drink':
-    print('you have a good time with your niggas and you go to the crif and chill 🥳')  
+- 🤖 AI-powered chat assistant (Rhea)
+- 📦 Product inventory management
+- 💰 Real-time pricing information
+- 👤 User balance inquiries
+- 🔧 Function calling with OpenAI
+- 🛡️ Input validation and sanitization
+- 🚀 Express.js REST API
+
+## Setup
+
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Environment Configuration
+Copy `.env.example` to `.env` and fill in your OpenAI API key:
+```bash
+cp .env.example .env
+```
+
+Edit `.env`:
+```env
+OPENAI_API_KEY=your_actual_openai_api_key_here
+PORT=3000
+NODE_ENV=development
+```
+
+### 3. Build the Project
+```bash
+npm run build
+```
+
+### 4. Start the Server
+```bash
+# Development mode with ts-node
+npm run dev
+
+# Production mode (requires build first)
+npm start
+```
+
+## API Endpoints
+
+### Health Check
+```bash
+GET /health
+```
+
+### AI Chat Stream
+```bash
+GET /api/stream?prompt=What is the stock for product-1?
+```
+
+### Product Information
+```bash
+GET /api/product-info?productId=product-1
+```
+
+## Available Functions
+
+The AI assistant can call these functions:
+
+1. **getStock(productId)** - Get current stock levels
+2. **getPrice(productId)** - Get product pricing information
+3. **getUserBalance(userId)** - Get user account balance
+
+## Example Usage
+
+### Chat with AI
+```bash
+curl "http://localhost:3000/api/stream?prompt=What%20is%20the%20price%20of%20product-1?"
+```
+
+### Get Product Info
+```bash
+curl "http://localhost:3000/api/product-info?productId=product-1"
+```
+
+## Project Structure
+
+```
+src/
+├── index.ts                 # Main application entry point
+├── router.ts               # Express routes and OpenAI integration
+├── handlers/
+│   ├── functionRouter.ts   # Function call handlers
+│   └── functionDefinitions.ts # OpenAI function definitions
+├── services/
+│   └── pricing.ts          # Pricing service
+├── prompts/
+│   └── systemPrompt.ts     # AI system prompt
+├── lib/
+│   └── sanitization.ts     # Input validation utilities
+└── common/
+    └── src/
+        └── unrestrictedobject.ts # Type definitions
+```
+
+## Development
+
+### Scripts
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm run dev` - Start development server with ts-node
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+
+### Adding New Functions
+
+1. Add function definition to `src/handlers/functionDefinitions.ts`
+2. Add function handler to `src/handlers/functionRouter.ts`
+3. The AI will automatically be able to call your new function
+
+## Security Notes
+
+- Always validate input using the sanitization utilities
+- Never expose sensitive data in function responses
+- Use environment variables for API keys and secrets
+- The current implementation uses mock data - replace with real services
+
+## License
+
+MIT  
     
